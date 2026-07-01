@@ -346,7 +346,7 @@ class H(BaseHTTPRequestHandler):
         e = {'ts':datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'m':m,'p':self.path,'ip':self._ip(),'t':self._t()}
         if x: e.update(x)
         HITS.append(e)
-        with open('captured.log','a') as f: f.write(json.dumps(e)+'\n')
+        # File write removed: ephemeral container filesystem causes crashes on Railway
         served = 'ATTACK' if self._cloud() and '/auth' not in self.path else ''
         print(f'  [{e["t"]}] {m} {self.path} {served}')
 
@@ -375,7 +375,7 @@ class H(BaseHTTPRequestHandler):
         elif p == '/log':
             self._send(200,'application/json',json.dumps(HITS,indent=2))
         elif p == '/clear':
-            HITS.clear();open('captured.log','w').close();self._send(200,'text/plain','OK')
+            HITS.clear();self._send(200,'text/plain','OK')
         else:
             self._log('GET');self._html(PAGE_B)
 
